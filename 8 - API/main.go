@@ -1,18 +1,16 @@
 package main
 
 import (
-	"api/src/config"
 	"api/src/router"
 	"fmt"
 	"log"
-	"log/slog"
 	"net/http"
 )
 
 func main() {
-	config.Loading()
-	slog.Info("| RUNNING SERVER ON PORT:", config.Port)
+	fmt.Println("Rodando API")
 
 	r := router.Generate()
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
+
+	log.Fatal(http.ListenAndServe(":5000", r))
 }

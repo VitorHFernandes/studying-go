@@ -5,33 +5,39 @@ import (
 	"net/http"
 )
 
-var routerUser = []Route{
+var routesUsers = []Route{
+	//* Cadastra um usuário
 	{
-		URI:         "/usuarios",
+		URI:         "/users",
 		Method:      http.MethodPost,
 		Function:    controllers.CreateUser,
 		RequireAuth: false,
 	},
+
+	//* Busca todos os usuários
 	{
-		URI:         "/usuarios",
+		URI:         "/users",
 		Method:      http.MethodGet,
-		Function:    controllers.SelectUsers,
+		Function:    controllers.GetUsers,
 		RequireAuth: false,
 	},
+	//* Busca um único usuário
 	{
-		URI:         "/usuarios/{usuarioId}",
+		URI:         "/users/{userId}",
 		Method:      http.MethodGet,
-		Function:    controllers.SelectUser,
+		Function:    controllers.GetUserById,
 		RequireAuth: false,
 	},
+	//* Atualiza um usuário
 	{
-		URI:         "/usuarios/{usuarioId}",
+		URI:         "/users/{userId}",
 		Method:      http.MethodPut,
 		Function:    controllers.UpdateUser,
 		RequireAuth: false,
 	},
+	//* Deleta um usuário
 	{
-		URI:         "/usuarios/{usuarioId}",
+		URI:         "/users/{userId}",
 		Method:      http.MethodDelete,
 		Function:    controllers.DeleteUser,
 		RequireAuth: false,

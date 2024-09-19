@@ -1,36 +1,28 @@
 package controllers
 
-import (
-	"log/slog"
-	"net/http"
-)
+import "net/http"
 
+//* Insere um usuário no banco de dados.
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	slog.Info("| CREATING USER")
-	w.Write([]byte("Criando usuário"))
-	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Criando usuário!"))
 }
 
-func SelectUsers(w http.ResponseWriter, r *http.Request) {
-	slog.Info("| SELECTING USERS")
-	w.Write([]byte("Buscando todos os usuários"))
-	w.WriteHeader(http.StatusOK)
+//* Busca todos os usuários salvos no banco de dados.
+func GetUsers(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Buscar todos os usuário!"))
 }
 
-func SelectUser(w http.ResponseWriter, r *http.Request) {
-	slog.Info("| SELECTING USER")
-	w.Write([]byte("Buscando um único usuário"))
-	w.WriteHeader(http.StatusOK)
+//* Busca um único usuário por ID.
+func GetUserById(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Buscando um único usuário por ID!"))
 }
 
+//* Altera as informações de um usuário no banco.
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	slog.Info("| UPDATING USER")
-	w.Write([]byte("Atualizando um usuário"))
-	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte("Atualizando um único usuário por ID!"))
 }
 
+//* Excluí as informações de um usuário no banco.
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	slog.Info("| DELETING USER")
-	w.Write([]byte("Deletando um usuário"))
-	w.WriteHeader(http.StatusNoContent)
+	w.Write([]byte("Deleta usuario"))
 }

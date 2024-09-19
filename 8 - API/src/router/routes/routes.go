@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Rota representa todas as rotas da API
+// * Route representa todas as rotas da API.
 type Route struct {
 	URI         string
 	Method      string
@@ -14,10 +14,9 @@ type Route struct {
 	RequireAuth bool
 }
 
-// Config coloca todas as rotas dentro do router
+// * Config - Coloca todas as rotas dentro do Router.
 func Config(r *mux.Router) *mux.Router {
-	routes := routerUser
-
+	routes := routesUsers
 	for _, route := range routes {
 		r.HandleFunc(route.URI, route.Function).Methods(route.Method)
 	}
