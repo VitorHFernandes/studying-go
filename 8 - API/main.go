@@ -11,10 +11,7 @@ import (
 func main() {
 	config.Loading()
 
-	fmt.Println(config.StringConnectionDB)
-
-	fmt.Println(config.Port)
-	fmt.Println("Rodando API")
+	fmt.Printf("Listen port %d", config.Port)
 
 	r := router.Generate()
 

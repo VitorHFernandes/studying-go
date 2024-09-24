@@ -1,28 +1,109 @@
 package controllers
 
-import "net/http"
+import (
+	"api/src/database"
+	"api/src/models"
+	"api/src/repositories"
+	"api/src/response"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+	"strings"
 
-//* Insere um usuário no banco de dados.
+	"github.com/gorilla/mux"
+)
+
+// * Insere um usuário no banco de dados.
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Criando usuário!"))
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Error(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var user models.User
+	if err = json.Unmarshal(bodyRequest, &user); err != nil {
+		response.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = user.Prepare(); err != nil {
+		response.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositories := repositories.NewUserRepository(db)
+	user.ID, err = repositories.Create(user)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusCreated, user)
 }
 
-//* Busca todos os usuários salvos no banco de dados.
+// * Busca todos os usuários salvos no banco de dados.
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Buscar todos os usuário!"))
+	n := strings.ToLower(r.URL.Query().Get("user"))
+
+	db, err := database.Connect()
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUserRepository(db)
+	u, err := repository.Find(n)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, u)
 }
 
-//* Busca um único usuário por ID.
+// * Busca um único usuário por ID.
 func GetUserById(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Buscando um único usuário por ID!"))
+	p := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(p["userId"], 10, 64)
+	if err != nil {
+		response.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUserRepository(db)
+	u, err := repository.FindById(userID)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, u)
 }
 
-//* Altera as informações de um usuário no banco.
+// * Altera as informações de um usuário no banco.
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Atualizando um único usuário por ID!"))
 }
 
-//* Excluí as informações de um usuário no banco.
+// * Excluí as informações de um usuário no banco.
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Deleta usuario"))
 }
