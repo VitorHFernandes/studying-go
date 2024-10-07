@@ -73,6 +73,7 @@ func (repository Users) Find(n string) ([]models.User, error) {
 	return users, nil
 }
 
+// * FindById busca um usuário por ID no banco de dados.
 func (repository Users) FindById(ID uint64) (models.User, error) {
 	lines, err := repository.db.Query(
 		"select id, name, nick, email, createdAt from users where id = ?",
@@ -99,4 +100,40 @@ func (repository Users) FindById(ID uint64) (models.User, error) {
 
 	return user, nil
 
+}
+
+// * Update altera as informações de um usuário, exceto a senha.
+func (repository Users) Update(ID uint64, user models.User) error {
+	statement, err := repository.db.Prepare(
+		"update users set name = ?, nick = ?, email = ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+
+	defer statement.Close()
+
+	if _, err = statement.Exec(
+		user.Name,
+		user.Nick,
+		user.Email,
+		ID,
+	); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repository Users) Delete(ID uint64) error {
+	statement, err := repository.db.Prepare("delete from users where id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(ID); err != nil {
+		return err
+	}
+	return nil
 }
